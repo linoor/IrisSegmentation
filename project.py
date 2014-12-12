@@ -3,7 +3,18 @@ import smilPython as smil
 
 images_folder = r"E:\Dropbox\Francja\Erasmus 2014\Mines ParisTech\Analyse d'images\examen_ES14\UBIRIS"
 
-def extract_reflections()
+def get_all_images():
+	return [Image(os.path.join(images_folder, img_path)) for img_path in os.listdir(images_folder)]
+
+def copy_image(im):
+	imOut = Image(im)
+	smil.copy(im, imOut)
+	return imOut
+
+def extract_reflections(im):
+	imOut = copy_image(im)
+	open(im, imOut, VertSE(3))
+	return imOut
 
 def main():
 	# choosing an image
@@ -12,24 +23,9 @@ def main():
 	#original_image.show()
 
 	# reflection extraction
-	img_no_reflections = Image(original_image)
-	open(original_image, img_no_reflections, VertSE(3))
-	img_no_reflections.show()
+	extract_reflections(original_image).show()
 
-	# # getting gradient
-	# img_gradient = Image(original_image)
-	# gradient(img_without_lights, img_gradient)
-	# #img_gradient.show()
-
-	# # h maxima
-	# img_maxima = Image(original_image)
-	# hMaxima(img_gradient, 20, img_maxima)
-	# img_maxima.show()
-
-	# # watershed
-	# img_watershed = Image(original_image)
-	# watershed(img_gradient, img_watershed)
-	# img_watershed.show()
+	map(lambda img: extract_reflections(img).show(), get_all_images())
 
 if __name__ == "__main__":
 	main()

@@ -13,7 +13,12 @@ def copy_image(im):
 
 def extract_reflections(im):
 	imOut = copy_image(im)
-	open(im, imOut, VertSE(3))
+	open(im, imOut, CrossSE(7))
+	return imOut
+
+def diff(im, im2):
+	imOut = copy_image(im)
+	compare(im, "!=", im2, 255, 0, imOut)
 	return imOut
 
 def main():
@@ -23,7 +28,8 @@ def main():
 	#original_image.show()
 
 	# reflection extraction
-	extract_reflections(original_image).show()
+	no_reflections = extract_reflections(original_image)
+	no_reflections.show()
 
 	map(lambda img: extract_reflections(img).show(), get_all_images())
 

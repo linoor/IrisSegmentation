@@ -13,7 +13,7 @@ def copy_image(im):
 
 def extract_reflections(im):
 	imOut = copy_image(im)
-	open(im, imOut, CrossSE(7))
+	smil.open(im, imOut, CrossSE(7))
 	return imOut
 
 def diff(im, im2):

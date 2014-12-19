@@ -13,8 +13,17 @@ def copy_image(im):
 
 def binarise(im):
     imOut = copy_image(im)
-    threshold(im, 0, 60, imOut)
+    threshold(im, 0, 60, 0, 255, imOut)
     return imOut
+
+def find_pupil(im):
+    binarised_img = binarise(im)
+
+    # filtering the image with erosion
+    eroded_img = copy_image(binarised_img)
+    erode(binarised_img, eroded_img)
+
+    return eroded_img
 
 def extract_reflections(im):
     imOut = copy_image(im)
@@ -34,9 +43,8 @@ def main():
     original_image = Image(os.path.join(images_folder, image_name))
     original_image.show()
 
-    # binarisation
-    binarised_img = binarise(original_image)
-    binarised_img.show()
+    pupil = find_pupil(original_image)
+    pupil.show()
 
     # map(lambda img: extract_reflections(img).show(), get_all_images())
 

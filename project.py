@@ -17,20 +17,26 @@ def binarise(im):
     return imOut
 
 def find_pupil(im):
+    # finding general area of the pupil
     binarised_img = binarise(im)
 
-    # filtering the image with erosion
+    # removing noise
     nl = CrossSE()
     eroded_img = copy_image(binarised_img)
     erode(binarised_img, eroded_img, nl(1))
+    eroded_img.show()
+
+    # finding pupil edges
+    gradient_img = copy_image(im)
+    gradient(im, gradient_img)
+    gradient_img.show()
 
     return eroded_img
 
 def extract_reflections(im):
     imOut = copy_image(im)
-    imMark = Image(im)
-    nl = HexSE()
-    ASF_Leveling(im, 5, imOut, nl(2))
+    nl = CrossSE()
+    erode(im, imOut, nl(2))
     return imOut
 
 def diff(im, im2):
@@ -44,8 +50,10 @@ def main():
     original_image = Image(os.path.join(images_folder, image_name))
     original_image.show()
 
-    pupil = find_pupil(original_image)
-    pupil.show()
+    extracted = extract_reflections(original_image)
+    extracted.show()
+
+    pupil = find_pupil(extracted)
 
     # map(lambda img: extract_reflections(img).show(), get_all_images())
 

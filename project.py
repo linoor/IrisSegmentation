@@ -13,7 +13,7 @@ def copy_image(im):
 
 def binarise(im):
     imOut = copy_image(im)
-    threshold(im, 0, 100, imOut)
+    threshold(im, 0, 60, imOut)
     return imOut
 
 def extract_reflections(im):

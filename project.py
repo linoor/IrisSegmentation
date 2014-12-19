@@ -20,8 +20,9 @@ def find_pupil(im):
     binarised_img = binarise(im)
 
     # filtering the image with erosion
+    nl = CrossSE()
     eroded_img = copy_image(binarised_img)
-    erode(binarised_img, eroded_img)
+    erode(binarised_img, eroded_img, nl(1))
 
     return eroded_img
 

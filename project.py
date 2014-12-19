@@ -12,9 +12,11 @@ def copy_image(im):
 	return imOut
 
 def extract_reflections(im):
-	imOut = copy_image(im)
-	smil.open(im, imOut, CrossSE(7))
-	return imOut
+    imOut = copy_image(im)
+    imMark = Image(im)
+    nl = HexSE()
+    ASF_Leveling(im, 5, imOut, nl(2))
+    return imOut
 
 def diff(im, im2):
 	imOut = copy_image(im)
@@ -25,7 +27,7 @@ def main():
 	# choosing an image
 	image_name = "I13.png"
 	original_image = Image(os.path.join(images_folder, image_name))
-	#original_image.show()
+	original_image.show()
 
 	# reflection extraction
 	no_reflections = extract_reflections(original_image)

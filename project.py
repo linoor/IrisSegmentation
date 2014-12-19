@@ -16,23 +16,6 @@ def binarise(im):
     threshold(im, 0, 60, 0, 255, imOut)
     return imOut
 
-def find_pupil(im):
-    # finding general area of the pupil
-    binarised_img = binarise(im)
-
-    # removing noise
-    nl = CrossSE()
-    eroded_img = copy_image(binarised_img)
-    erode(binarised_img, eroded_img, nl(1))
-    eroded_img.show()
-
-    # finding pupil edges
-    gradient_img = copy_image(im)
-    gradient(im, gradient_img)
-    gradient_img.show()
-
-    return eroded_img
-
 def extract_reflections(im):
     imOut = copy_image(im)
     nl = CrossSE()
@@ -53,7 +36,24 @@ def main():
     extracted = extract_reflections(original_image)
     extracted.show()
 
-    pupil = find_pupil(extracted)
+    # finding the pupil
+    # finding general area of the pupil
+    binarised_img = binarise(original_image)
+
+    # removing noise
+    nl = CrossSE()
+    pupil_marker = copy_image(binarised_img)
+    erode(binarised_img, pupil_marker, nl(1))
+    pupil_marker.show()
+
+    # finding pupil edges
+    gradient_img = copy_image(extracted)
+    gradient(extracted, gradient_img)
+
+    # gradient_dilated = copy_image(gradient_img)
+    # dilate(gradient_img, gradient_dilated)
+    inv(gradient_img, gradient_img)
+    gradient_img.show()
 
     # map(lambda img: extract_reflections(img).show(), get_all_images())
 

@@ -77,5 +77,10 @@ def main():
     smil.open(binarised_img, closed_pupil, HexSE(8))
     closed_pupil.show()
 
+    # remove reflection from the original image
+    no_reflection = copy_image(original_image)
+    compare(closed_pupil, "<=", original_image, closed_pupil, original_image, no_reflection)
+    no_reflection.show()
+
 if __name__ == "__main__":
     main()

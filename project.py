@@ -13,12 +13,12 @@ def copy_image(im):
 
 def binarise(im):
     imOut = copy_image(im)
-    threshold(im, 0, 60, 0, 255, imOut)
+    threshold(im, 0, 40, 0, 255, imOut)
     return imOut
 
 def extract_reflections(im):
     imOut = copy_image(im)
-    nl = CrossSE()
+    nl = HexSE()
     erode(im, imOut, nl(2))
     return imOut
 
@@ -27,18 +27,12 @@ def diff(im, im2):
     compare(im, "!=", im2, 255, 0, imOut)
     return imOut
 
-def main():
-    # choosing an image
-    image_name = "I13.png"
-    original_image = Image(os.path.join(images_folder, image_name))
-    original_image.show()
-
-    extracted = extract_reflections(original_image)
-    extracted.show()
+def find_pupil(im):
+    extracted = extract_reflections(im)
 
     # finding the pupil
     # finding general area of the pupil
-    binarised_img = binarise(original_image)
+    binarised_img = binarise(im)
 
     # removing noise
     nl = CrossSE()
@@ -53,9 +47,22 @@ def main():
     # gradient_dilated = copy_image(gradient_img)
     # dilate(gradient_img, gradient_dilated)
     inv(gradient_img, gradient_img)
-    gradient_img.show()
 
-    # map(lambda img: extract_reflections(img).show(), get_all_images())
+    # choosing the pupil by reconstruction
+    pupil = Image(im)
+    raze(pupil_marker, gradient_img, pupil)
+
+    return pupil
+
+def main():
+    # choosing an image
+    image_name = "I15.png"
+    original_image = Image(os.path.join(images_folder, image_name))
+    original_image.show()
+
+    # extracting the reflections from the eye
+    holes_filled = Image(original_image)
+    # first we have to find the region of the pupil
 
 if __name__ == "__main__":
     main()

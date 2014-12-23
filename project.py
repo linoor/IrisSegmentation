@@ -74,7 +74,7 @@ def main():
 
     # removing reflection from the pupil
     closed_pupil = Image(binarised_img)
-    smil.open(binarised_img, closed_pupil, HexSE(8))
+    smil.open(binarised_img, closed_pupil, HexSE(10))
     closed_pupil.show()
 
     # remove reflection from the original image

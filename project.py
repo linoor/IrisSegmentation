@@ -13,7 +13,13 @@ def copy_image(im):
 
 def binarise(im):
     imOut = copy_image(im)
-    threshold(im, 0, 40, 0, 255, imOut)
+    min_val = 0
+    max_val = 50
+    trueval = 0
+    falseval = 255
+    threshold(im, min_val, max_val, trueval, falseval, imOut)
+    # removing noise
+    dilate(imOut, imOut)
     return imOut
 
 def extract_reflections(im):
@@ -61,8 +67,10 @@ def main():
     original_image.show()
 
     # extracting the reflections from the eye
-    holes_filled = Image(original_image)
     # first we have to find the region of the pupil
+    # to do that we binarise the image
+    binarised_img = binarise(original_image)
+    binarised_img.show()
 
 if __name__ == "__main__":
     main()

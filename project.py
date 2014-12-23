@@ -72,5 +72,10 @@ def main():
     binarised_img = binarise(original_image)
     binarised_img.show()
 
+    # removing reflection from the pupil
+    closed_pupil = Image(binarised_img)
+    smil.open(binarised_img, closed_pupil, HexSE(8))
+    closed_pupil.show()
+
 if __name__ == "__main__":
     main()

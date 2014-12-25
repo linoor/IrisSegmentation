@@ -13,13 +13,14 @@ def copy_image(im):
 
 def binarise(im):
     imOut = copy_image(im)
+    imIn = copy_image(im)
     min_val = 0
     max_val = 50
     trueval = 0
     falseval = 255
-    threshold(im, min_val, max_val, trueval, falseval, imOut)
+    threshold(imIn, min_val, max_val, trueval, falseval, imOut)
     # removing noise
-    dilate(imOut, imOut)
+    dilate(imOut, imOut, HexSE(1))
     return imOut
 
 def extract_reflections(im):
@@ -71,16 +72,19 @@ def main():
     # to do that we binarise the image
     binarised_img = binarise(original_image)
     binarised_img.show()
+    write(binarised_img, "binarised.png")
 
     # removing reflection from the pupil
     closed_pupil = Image(binarised_img)
     smil.open(binarised_img, closed_pupil, HexSE(10))
     closed_pupil.show()
+    write(closed_pupil, "closed_pupil.png")
 
     # remove reflection from the original image
     no_reflection = copy_image(original_image)
     compare(closed_pupil, "<=", original_image, closed_pupil, original_image, no_reflection)
     no_reflection.show()
+    write(no_reflection, "no_reflection.png")
 
 if __name__ == "__main__":
     main()

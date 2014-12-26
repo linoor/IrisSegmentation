@@ -69,8 +69,8 @@ def main():
     write(binarised_img, "binarised.png")
 
     # removing eyelashes, closing the pupil
-    smil.close(binarised_img, closed_pupil)
-    smil.open(closed_pupil, closed_pupil, HexSE(5))
+    smil.close(binarised_img, closed_pupil, VertSE(2))
+    smil.open(closed_pupil, closed_pupil, HexSE(9))
     closed_pupil.show()
 
     # gradient

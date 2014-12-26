@@ -40,7 +40,7 @@ def normalize(im):
 
 def main():
     # choosing an image
-    image_name = "I13.png"
+    image_name = "I15.png"
     original_image = Image(os.path.join(images_folder, image_name))
     original_image.show()
 
@@ -52,7 +52,11 @@ def main():
     im.show()
 
     # removing reflections
-    
+    threshold(im, 240, 255, 0, 255, no_reflections) 
+    # finding reflections (pixels with value over 240)
+    compare(no_reflections, "==", 0, no_reflections, im, no_reflections)
+    smil.open(no_reflections, no_reflections, HexSE(2))
+    no_reflections.show()
 
     # # thresholding image to get the pupil (sometimes we get also the eyelashes)
     # binarised_img = binarise(original_image)

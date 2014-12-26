@@ -20,7 +20,7 @@ def binarise(im):
     imOut = copy_image(im)
     imIn = copy_image(im)
     min_val = 0
-    max_val = 80
+    max_val = 50
     trueval = 0
     falseval = 255
     threshold(imIn, min_val, max_val, trueval, falseval, imOut)
@@ -45,32 +45,47 @@ def main():
     original_image.show()
 
     # initialising images
-    no_reflections = Image(original_image)
+    no_reflections = copy_image(original_image)
+    closed_pupil = Image(original_image)
+    grad = Image(original_image)
 
     # normalize image
     im = normalize(original_image)
     im.show()
 
-    # removing reflections
-    threshold(im, 240, 255, 0, 255, no_reflections) 
-    # finding reflections (pixels with value over 240)
+    # removing reflections over the area of the pupil
+    no_reflections.getPixel(76, 50)
+    for i in range(30, 100):
+        for j in range(25, 90):
+            if no_reflections.getPixel(i, j) > 240:
+                no_reflections.setPixel(i, j, 0)
     compare(no_reflections, "==", 0, no_reflections, im, no_reflections)
     smil.open(no_reflections, no_reflections, HexSE(2))
     no_reflections.show()
 
-    # # thresholding image to get the pupil (sometimes we get also the eyelashes)
-    # binarised_img = binarise(original_image)
-    # binarised_img.show()
-    # write(binarised_img, "binarised.png")
+    # thresholding image to get the pupil (sometimes we get also the eyelashes)
+    binarised_img = binarise(original_image)
+    binarised_img.show()
+    write(binarised_img, "binarised.png")
 
     # removing eyelashes, closing the pupil
+    smil.close(binarised_img, closed_pupil)
+    smil.open(closed_pupil, closed_pupil, HexSE(5))
+    closed_pupil.show()
 
+    # gradient
+    gradient(no_reflections, grad)
+    inv(grad, grad)
+    dilate(grad, grad)
+    grad.show()
 
-    # # remove reflection from the original image
-    # no_reflection = copy_image(original_image)
-    # compare(closed_pupil, "<=", original_image, closed_pupil, original_image, no_reflection)
-    # no_reflection.show()
-    # write(no_reflection, "no_reflection.png")
+    # reconstruction
+    inv_closed_pupil = Image()
+    inv(closed_pupil, inv_closed_pupil)
+    inv_closed_pupil.show()
+    recon = Image()
+    build(inv_closed_pupil, original_image, recon)
+    recon.show()
 
 if __name__ == "__main__":
     main()

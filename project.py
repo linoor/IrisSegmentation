@@ -26,6 +26,18 @@ def binarise(im):
     threshold(imIn, min_val, max_val, trueval, falseval, imOut)
     return imOut
 
+def normalize(im):
+    """ linear normalization of a grayscale digital image """
+    min_val = minVal(im)
+    max_val = maxVal(im)
+    imOut = copy_image(im)
+    for i in range(im.getWidth()):
+        for j in range(im.getHeight()):
+            pixel = im.getPixel(i, j)
+            imOut.setPixel(i, j, long((pixel - min_val) * (255 - 0) / (max_val - min_val) + 0))
+
+    return imOut
+
 def main():
     # choosing an image
     image_name = "I13.png"
@@ -35,18 +47,20 @@ def main():
     # initialising images
     no_reflections = Image(original_image)
 
-    # removing reflections
-    median(original_image, no_reflections, CrossSE(2))
-    smil.open(no_reflections, no_reflections, CrossSE(2))
-    no_reflections.show()
+    # normalize image
+    im = normalize(original_image)
+    im.show()
 
-    # thresholding image to get the pupil (sometimes we get also the eyelashes)
-    binarised_img = binarise(original_image)
-    binarised_img.show()
-    write(binarised_img, "binarised.png")
+    # removing reflections
+    
+
+    # # thresholding image to get the pupil (sometimes we get also the eyelashes)
+    # binarised_img = binarise(original_image)
+    # binarised_img.show()
+    # write(binarised_img, "binarised.png")
 
     # removing eyelashes, closing the pupil
-    
+
 
     # # remove reflection from the original image
     # no_reflection = copy_image(original_image)

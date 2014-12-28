@@ -1,5 +1,6 @@
 import os
 import smilPython as smil
+import math
 
 images_folder = r"E:\Dropbox\Francja\Erasmus 2014\Mines ParisTech\Analyse d'images\examen_ES14\UBIRIS"
 
@@ -38,6 +39,14 @@ def normalize(im):
 
     return imOut
 
+def draw_circle(im, x0, y0, r):
+    for d in range(360):
+        t = math.radians(d)
+        x = int(r*math.cos(t))
+        y = int(r*math.sin(t))
+        print(x, y)
+        im.setPixel(x0+x, y0+y, 255)
+
 def main():
     # choosing an image
     image_name = "I15.png"
@@ -49,9 +58,9 @@ def main():
     closed_pupil = Image(original_image)
     grad = Image(original_image)
 
-    # normalize image
+    # normalizing the image
     im = normalize(original_image)
-    im.show()
+    # im.show()
 
     # removing reflections over the area of the pupil
     no_reflections.getPixel(76, 50)
@@ -61,7 +70,7 @@ def main():
                 no_reflections.setPixel(i, j, 0)
     compare(no_reflections, "==", 0, no_reflections, im, no_reflections)
     smil.open(no_reflections, no_reflections, HexSE(2))
-    no_reflections.show()
+    # no_reflections.show()
 
     # thresholding image to get the pupil (sometimes we get also the eyelashes)
     binarised_img = binarise(original_image)
@@ -75,17 +84,42 @@ def main():
 
     # gradient
     gradient(no_reflections, grad)
-    inv(grad, grad)
-    dilate(grad, grad)
-    grad.show()
+    erode(grad, grad, CrossSE(3))
+    # grad.show()
 
-    # reconstruction
-    inv_closed_pupil = Image()
-    inv(closed_pupil, inv_closed_pupil)
-    inv_closed_pupil.show()
-    recon = Image()
-    build(inv_closed_pupil, original_image, recon)
-    recon.show()
+    # # reconstruction
+    # inv_closed_pupil = Image()
+    # inv(closed_pupil, inv_closed_pupil)
+    # inv_closed_pupil.show()
+    # recon = Image()
+    # build(inv_closed_pupil, original_image, recon)
+    # recon.show()
+
+    # calculating the the pupil's center of mass from the binary image
+    pixels = []
+    x_sum = 0
+    y_sum = 0
+    num_black_pixels = 0
+    image = closed_pupil
+    for i in range(image.getWidth()):
+        for j in range(image.getHeight()):
+            pixel = image.getPixel(i, j)
+            if pixel == 0:
+                num_black_pixels += 1
+                x_sum += i
+                y_sum += j
+
+    pupil_x = int((1.0/num_black_pixels) * x_sum)
+    pupil_y = int((1.0/num_black_pixels) * y_sum)
+    pupil_r = int(math.sqrt(num_black_pixels / math.pi))
+
+    # showing where the pupil is
+    pupil_showed = Image(original_image)
+    pupil_showed << 0
+    draw_circle(pupil_showed, pupil_x, pupil_y, pupil_r)
+    # pupil_showed.show()
+
+    overlay(pupil_showed, original_image)
 
 if __name__ == "__main__":
     main()

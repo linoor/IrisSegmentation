@@ -44,7 +44,6 @@ def draw_circle(im, x0, y0, r):
         t = math.radians(d)
         x = int(r*math.cos(t))
         y = int(r*math.sin(t))
-        print(x, y)
         im.setPixel(x0+x, y0+y, 255)
 
 def main():
@@ -56,7 +55,6 @@ def main():
     # initialising images
     no_reflections = copy_image(original_image)
     closed_pupil = Image(original_image)
-    grad = Image(original_image)
 
     # normalizing the image
     im = normalize(original_image)
@@ -74,18 +72,13 @@ def main():
 
     # thresholding image to get the pupil (sometimes we get also the eyelashes)
     binarised_img = binarise(original_image)
-    binarised_img.show()
+    # binarised_img.show()
     write(binarised_img, "binarised.png")
 
     # removing eyelashes, closing the pupil
     smil.close(binarised_img, closed_pupil, VertSE(2))
     smil.open(closed_pupil, closed_pupil, HexSE(9))
-    closed_pupil.show()
-
-    # gradient
-    gradient(no_reflections, grad)
-    erode(grad, grad, CrossSE(3))
-    # grad.show()
+    # closed_pupil.show()
 
     # # reconstruction
     # inv_closed_pupil = Image()
@@ -118,8 +111,14 @@ def main():
     pupil_showed << 0
     draw_circle(pupil_showed, pupil_x, pupil_y, pupil_r)
     # pupil_showed.show()
-
     overlay(pupil_showed, original_image)
+
+    # gradient
+    grad = copy_image(no_reflections)
+    close(grad, grad, SquSE(10))
+    threshold(grad, grad)
+    gradient(grad, grad)
+    grad.show()
 
 if __name__ == "__main__":
     main()

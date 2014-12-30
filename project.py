@@ -75,6 +75,7 @@ def main():
     # initialising images
     no_reflections = copy_image(original_image)
     closed_pupil = Image(original_image)
+    result = Image(original_image)
 
     # normalizing the image
     im = normalize(original_image)
@@ -108,7 +109,6 @@ def main():
     pupil_showed << 0
     draw_circle(pupil_showed, pupil_x, pupil_y, pupil_r)
     # pupil_showed.show()
-    overlay(pupil_showed, original_image)
 
     # gradient
     grad = copy_image(no_reflections)
@@ -122,7 +122,11 @@ def main():
     iris_showed << 0
     draw_circle(iris_showed, iris_x, iris_y, iris_r)
 
-    overlay(iris_showed, original_image)
+    # preparing the result
+    draw_circle(result, pupil_x, pupil_y, pupil_r)
+    draw_circle(result, iris_x, iris_y, iris_r)
+    compare(result, "==", 255, result, original_image, result)
+    result.show()
 
 if __name__ == "__main__":
     main()
